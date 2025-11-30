@@ -23,6 +23,7 @@ body{
 h1{
     text-align:center;
     color:#004c97;
+    cursor:pointer;
 }
 label{
     font-weight:bold;
@@ -74,7 +75,14 @@ hr{
 <body>
 
 <div class="container">
-<h1>📩 Postulation</h1>
+
+<!-- TITRE = ACCÈS FORMATEUR -->
+<h1 onclick="showReset()">📩 Postulation</h1>
+
+<!-- RESET TOTAL CACHÉ -->
+<button id="resetTotal" class="secondary hidden" onclick="resetTotal()">
+♻️ Réinitialiser toutes les données
+</button>
 
 <!-- PROFIL -->
 <div id="profil">
@@ -121,6 +129,11 @@ const profil = document.getElementById("profil");
 const messageZone = document.getElementById("messageZone");
 const objetPreview = document.getElementById("objetPreview");
 const message = document.getElementById("message");
+const resetBtn = document.getElementById("resetTotal");
+
+let resetVisible = false;
+
+// ===== LOGIQUE =====
 
 function validerProfil(){
     if(!prenomElt.value || !nomElt.value || !posteElt.value){
@@ -147,7 +160,7 @@ function genererMessage(){
 
     let objet = buildObjet(poste);
 
-    let texte =
+    message.value =
 `Madame, Monsieur,
 
 Je vous envoie ci-joint mon dossier de candidature pour le poste de ${poste}.
@@ -160,7 +173,6 @@ Cordialement,
 ${prenom} ${nom}`;
 
     objetPreview.innerText = "Objet : " + objet;
-    message.value = texte;
 
     profil.classList.add("hidden");
     messageZone.classList.remove("hidden");
@@ -168,8 +180,7 @@ ${prenom} ${nom}`;
 
 function copierObjet(){
     let poste = localStorage.getItem("poste") || "";
-    let objet = buildObjet(poste);
-    navigator.clipboard.writeText(objet);
+    navigator.clipboard.writeText(buildObjet(poste));
     alert("Objet copié ✅");
 }
 
@@ -178,6 +189,8 @@ function copierMessage(){
     alert("Message copié ✅");
 }
 
+// ===== RESET =====
+
 function resetPoste(){
     localStorage.removeItem("poste");
     posteElt.value = "";
@@ -185,7 +198,24 @@ function resetPoste(){
     profil.classList.remove("hidden");
 }
 
-// Remplissage auto prénom / nom
+function showReset(){
+    if(resetVisible) return;
+    resetVisible = true;
+    resetBtn.classList.remove("hidden");
+    setTimeout(()=>{
+        resetBtn.classList.add("hidden");
+        resetVisible = false;
+    }, 5000);
+}
+
+function resetTotal(){
+    if(confirm("Effacer toutes les données enregistrées ?")){
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+// ===== AUTO-REMPLISSAGE =====
 if(localStorage.getItem("prenom")) prenomElt.value = localStorage.getItem("prenom");
 if(localStorage.getItem("nom")) nomElt.value = localStorage.getItem("nom");
 </script>
