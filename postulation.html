@@ -18,10 +18,17 @@ body{
     background:white;
     padding:25px;
     border-radius:20px;
-    box-shadow:0 6px 25px rgba(0,0,0,0.12);
+    box-shadow:0 6px 25px rgba(0,0,0,.12);
 }
-h1{text-align:center;color:#004c97}
-label{font-weight:bold;margin-top:15px;display:block}
+h1{
+    text-align:center;
+    color:#004c97;
+}
+label{
+    font-weight:bold;
+    margin-top:15px;
+    display:block;
+}
 input, textarea{
     width:100%;
     padding:12px;
@@ -41,20 +48,26 @@ button{
     border-radius:14px;
     cursor:pointer;
 }
-button.secondary{background:#666}
-.hidden{display:none}
-.info{
-    font-size:14px;
-    color:#555;
-    margin-top:10px;
-    text-align:center;
+button.secondary{
+    background:#666;
+}
+.hidden{
+    display:none;
 }
 .preview{
     font-size:15px;
     font-weight:bold;
     margin-bottom:10px;
 }
-hr{margin:22px 0}
+.info{
+    font-size:14px;
+    color:#555;
+    margin-top:10px;
+    text-align:center;
+}
+hr{
+    margin:22px 0;
+}
 </style>
 </head>
 
@@ -72,13 +85,11 @@ hr{margin:22px 0}
     <input id="nom">
 
     <label>Poste recherché</label>
-    <input id="poste" placeholder="Ex : aide-cuisine, nettoyage">
+    <input id="poste" placeholder="Ex : aide-cuisine, agent d’entretien">
 
     <button onclick="validerProfil()">✅ Continuer</button>
 
-    <p class="info">
-        Le prénom et le nom sont mémorisés sur ce téléphone.
-    </p>
+    <p class="info">Le prénom et le nom restent mémorisés sur ce téléphone.</p>
 </div>
 
 <!-- MESSAGE -->
@@ -122,12 +133,19 @@ function validerProfil(){
     genererMessage();
 }
 
+function buildObjet(poste){
+    let firstLetter = poste.trim().charAt(0).toLowerCase();
+    let voyelles = ["a","e","i","o","u","y","h"];
+    let deOuD = voyelles.includes(firstLetter) ? "d’" : "de ";
+    return "Candidature – poste " + deOuD + poste;
+}
+
 function genererMessage(){
     let prenom = localStorage.getItem("prenom");
     let nom = localStorage.getItem("nom");
     let poste = localStorage.getItem("poste");
 
-    let objet = "Candidature – poste de " + poste;
+    let objet = buildObjet(poste);
 
     let texte =
 `Madame, Monsieur,
@@ -149,7 +167,8 @@ ${prenom} ${nom}`;
 }
 
 function copierObjet(){
-    let objet = "Candidature – poste de " + localStorage.getItem("poste");
+    let poste = localStorage.getItem("poste") || "";
+    let objet = buildObjet(poste);
     navigator.clipboard.writeText(objet);
     alert("Objet copié ✅");
 }
@@ -167,12 +186,8 @@ function resetPoste(){
 }
 
 // Remplissage auto prénom / nom
-if(localStorage.getItem("prenom")){
-    prenomElt.value = localStorage.getItem("prenom");
-}
-if(localStorage.getItem("nom")){
-    nomElt.value = localStorage.getItem("nom");
-}
+if(localStorage.getItem("prenom")) prenomElt.value = localStorage.getItem("prenom");
+if(localStorage.getItem("nom")) nomElt.value = localStorage.getItem("nom");
 </script>
 
 </body>
